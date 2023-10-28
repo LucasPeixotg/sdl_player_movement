@@ -1,0 +1,1 @@
+void normalize_vector2(float vector[2]);
