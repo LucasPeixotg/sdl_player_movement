@@ -27,26 +27,75 @@ void setup_player(void) {
     player.move_set.right = FALSE;
     player.move_set.down  = FALSE;
     player.move_set.left  = FALSE;
+    player.move_set.dash  = FALSE;
+    
+    player.possible_moves.up    = TRUE;
+    player.possible_moves.right = TRUE;
+    player.possible_moves.down  = TRUE;
+    player.possible_moves.left  = TRUE;
+    player.possible_moves.dash  = TRUE;
 }
 
 void set_move_player(void) {
-    if(player.move_set.right) {
+    static Uint32 move_ticks_start = 0;
+
+    if(player.move_set.right && player.possible_moves.right) {
         player.direction[0] = 1;
-    } else if(player.move_set.left) {
+    } else if(player.move_set.left && player.possible_moves.left) {
         player.direction[0] = -1;
     }
 
-    if(player.move_set.up) {
+    if(player.move_set.up && player.possible_moves.up) {
         player.direction[1] = -1;
-    } else if(player.move_set.down) {
+    } else if(player.move_set.down && player.possible_moves.down) {
         player.direction[1] = 1;
     }
 
     if(!player.move_set.up && !player.move_set.right && !player.move_set.down && !player.move_set.left) {
         player.acceleration = 0;
-    } else {
+    } else if(!player.is_dashing) {
         normalize_vector2(player.direction);
         player.acceleration = PLAYER_ACCELERATION;
+
+        if(player.move_set.dash) {
+            if(player.possible_moves.dash) {
+                player.possible_moves.up    = FALSE;
+                player.possible_moves.right = FALSE; 
+                player.possible_moves.down  = FALSE;  
+                player.possible_moves.left  = FALSE;
+                player.possible_moves.dash  = FALSE;  
+
+                player.is_dashing = TRUE;
+                move_ticks_start = SDL_GetTicks();
+
+                player.direction[0] *= PLAYER_DASH_FACTOR;
+                player.direction[1] *= PLAYER_DASH_FACTOR;
+            }
+        }
+    }
+
+    float seconds = get_delta_since(move_ticks_start);
+
+    if(player.is_dashing) {
+        if(seconds >= PLAYER_DASH_DURATION) {
+            player.is_dashing = FALSE;
+            player.is_dashing_delay = TRUE;
+
+            player.possible_moves.up    = TRUE;
+            player.possible_moves.right = TRUE; 
+            player.possible_moves.down  = TRUE;  
+            player.possible_moves.left  = TRUE;  
+            
+            normalize_vector2(player.direction);
+            move_ticks_start = SDL_GetTicks();
+        }
+    }
+
+    if(player.is_dashing_delay) {
+        if(seconds >= PLAYER_DASH_DELAY) {
+            player.possible_moves.dash  = TRUE;
+            player.is_dashing_delay = FALSE;
+        }
     }
 }
 
@@ -77,6 +126,12 @@ void render_player(SDL_Renderer* renderer) {
         (int) player.height
     };
 
-    SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
+    if(player.is_dashing) {
+        SDL_SetRenderDrawColor(renderer, 200, 100, 100, 255);
+    } else if(player.possible_moves.dash) {
+        SDL_SetRenderDrawColor(renderer, 200, 50, 50, 255);
+    } else {
+        SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
+    }
     SDL_RenderFillRect(renderer, &player_rect);
 }

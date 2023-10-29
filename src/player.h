@@ -5,6 +5,7 @@ typedef struct {
     int right;
     int down;
     int left;
+    int dash;
 } MoveSet;
 
 typedef struct {
@@ -18,6 +19,9 @@ typedef struct {
     float friction;
     float angle;
     MoveSet move_set;
+    MoveSet possible_moves;
+    int is_dashing;
+    int is_dashing_delay;
 } Player;
 
 

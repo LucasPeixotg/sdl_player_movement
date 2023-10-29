@@ -67,6 +67,7 @@ void process_inputs() {
             if(event.key.keysym.sym == SDLK_d) player.move_set.right = TRUE;
             if(event.key.keysym.sym == SDLK_s) player.move_set.down = TRUE;
             if(event.key.keysym.sym == SDLK_a) player.move_set.left = TRUE;
+            if(event.key.keysym.sym == SDLK_SPACE) player.move_set.dash = TRUE;
 
             break;
         case SDL_KEYUP:
@@ -74,6 +75,7 @@ void process_inputs() {
             if(event.key.keysym.sym == SDLK_d) player.move_set.right = FALSE;
             if(event.key.keysym.sym == SDLK_s) player.move_set.down = FALSE;
             if(event.key.keysym.sym == SDLK_a) player.move_set.left = FALSE;
+            if(event.key.keysym.sym == SDLK_SPACE) player.move_set.dash = FALSE;
 
             break;
 
