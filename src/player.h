@@ -14,6 +14,8 @@ typedef struct {
     float width;
     float height;
     float velocity;
+    float acceleration;
+    float friction;
     float angle;
     MoveSet move_set;
 } Player;
