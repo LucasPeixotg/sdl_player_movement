@@ -32,3 +32,5 @@ void render_player(SDL_Renderer* renderer);
 void setup_player(void);
 
 void set_move_player();
+
+void rotate_player(int x, int y);

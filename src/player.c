@@ -134,4 +134,17 @@ void render_player(SDL_Renderer* renderer) {
         SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
     }
     SDL_RenderFillRect(renderer, &player_rect);
+
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_RenderDrawLine(
+        renderer, 
+        (int) (player.x + player.width / 2), 
+        (int) (player.y + player.height/ 2), 
+        (int) (player.x + player.width / 2 + cos(player.angle) * player.width), 
+        (int) (player.y + player.height/ 2 + sin(player.angle) * player.width)
+    );
+}
+
+void rotate_player(int x, int y) {
+    player.angle = atan2(y - player.y, x - player.x);
 }

@@ -34,6 +34,7 @@ int initialize_window(SDL_Window** window, SDL_Renderer** renderer) {
         WINDOW_HEIGHT,
         SDL_WINDOW_BORDERLESS 
     );
+
     if(!*window) {
         fprintf(stderr, "Error creating SDL window.\n");
         return FALSE;
@@ -55,6 +56,11 @@ void setup(void) {
 void process_inputs() {
     SDL_Event event;
     SDL_PollEvent(&event);
+
+    int mouse_x, mouse_y;
+    SDL_GetMouseState(&mouse_x, &mouse_y);
+    
+    rotate_player(mouse_x, mouse_y);
 
     switch(event.type) {
         case SDL_QUIT:
